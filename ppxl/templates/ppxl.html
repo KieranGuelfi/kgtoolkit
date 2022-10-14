@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<!-- about -->
+<div id="about" class="about">
+   <div class="container-fluid">
+      <div class="row d_flex">
+         <div class="col-md-5">
+            <div class="about_img">
+               <figure><img src=" {% static 'images/about_img.jpg' %} " alt="#" /></figure>
+            </div>
+         </div>
+         <div class="col-md-7">
+            <div class="titlepage">
+               <h2>PharmaProgram <span class="blu"><br>Report Converter</span></h2>
+               <p>Use the button below to upload the PharmaProgram report that gets sent out on the 1st of each
+                  month, then email it to Nadine. Easy, no?</p>
+               <p>If you need to add, update or delete any Maximum Price to Patient values, go <a
+                     href="{% url 'mptpedit' %}"><u><b>here</b></u></a>.</p>
+               <!-- Upload form -->
+               <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <p>
+                     {{ form.report }}
+                  </p>
+                  <p><input type="submit" value="Upload" /></p>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- end about -->
+{% endblock %}

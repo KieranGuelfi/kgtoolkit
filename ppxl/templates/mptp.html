@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<!-- about -->
+<div id="about" class="about">
+    <div class="container-fluid">
+        <div class="row d_flex">
+            <div class="col-md-5">
+                <div class="about_img">
+                    <figure><img src=" {% static 'images/about_img.jpg' %} " alt="#" /></figure>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="titlepage">
+                    <h2>MPTP <span class="blu">Editor</span></h2>
+                    <p>Use this window to add, edit or delete any Maximum Price to Patient values that the PharmaProgram
+                        report editor can recognise.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end about -->
+{% endblock %}
