@@ -14,9 +14,15 @@
             </div>
             <div class="col-md-7">
                 <div class="titlepage">
-                    <h2>MPTP <span class="blu">Editor</span></h2>
-                    <p>Use this window to add, edit or delete any Maximum Price to Patient values that the PharmaProgram
-                        report editor can recognise.</p>
+                    <h2>MPTP <span class="blu">List</span></h2>
+                    <ul>
+                        {% for object in object_list %}
+                        <li>
+                            <p>Added {{object.date_added}} - {{ object.name }} ${{ object.mptp }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <p><a href="{% url 'upload_file' %}"><u><b>Return to the converter</b></u></a></p>
                 </div>
             </div>
         </div>

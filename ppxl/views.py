@@ -1,11 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.generic.list import ListView
 import pandas as pd
 from io import BytesIO
 
 from .forms import UploadReportForm
 
+from .models import MPTP
+
+
 # Create your views here.
+
+class MPTPList(ListView):
+    model = MPTP
 
 
 def upload_file(request):
@@ -16,16 +23,10 @@ def upload_file(request):
         # Return the report as a file object
         report = request.FILES['report']
 
-        # Definition of mptpdict, which is a dictionary of the MPTP for each pharmaprogram item
-        mptpdict = {
-            "BRINTELLIX TAB 5MG BLST 28": 64.98,
-            "BRINTELLIX TAB 10MG BLST 28": 64.98,
-            "BRINTELLIX TAB 15MG BLST 28": 74.98,
-            "BRINTELLIX TAB 20MG BLST 28": 84.98,
-            "LOCERYL NLACQ KIT 5ML": 64.95,
-            "NUROFEN C&F TAB 24": 22.98,
-            "NUROFEN PLUS TAB 30 (S4)": 19.98
-        }
+        # Creates mptpdict, which is a dictionary of all PharmaProgram items currently in the database
+        mptpdict = {}
+        for item in MPTP.objects.all():
+            mptpdict[item.itemdesc] = item.mptp
 
         # Convert the file object to a Pandas dataframe
         ppsales = pd.read_excel(report)
@@ -117,8 +118,4 @@ def upload_file(request):
         form = UploadReportForm
         # This makes the Upload button appear
         show_link = True
-    return render(request, 'ppxl.html', {'form': form})
-
-
-def mptpedit(request):
-    return render(request, 'mptp.html', {})
+    return render(request, 'ppxl/ppxl.html', {'form': form})
