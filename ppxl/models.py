@@ -18,8 +18,11 @@ class MPTP(models.Model):
     itemdesc = models.CharField(
         max_length=255,
         verbose_name="POS Works Description")
+    mptp_applies = models.BooleanField(default=True)
     mptp = models.FloatField(
-        verbose_name="Maximum Price to Patient")
+        verbose_name="Maximum Price to Patient",
+        blank=True,
+        null=True)
     date_added = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Date added")

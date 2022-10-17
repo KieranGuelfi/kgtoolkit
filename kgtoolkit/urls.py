@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('home.urls')),
     path('ppxl/', include('ppxl.urls')),
     path('blog/', include('blog.urls')),
+    path('accounts/', include('accounts.urls')),
 ]

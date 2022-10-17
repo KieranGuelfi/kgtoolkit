@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.list import ListView
@@ -23,10 +24,14 @@ def upload_file(request):
         # Return the report as a file object
         report = request.FILES['report']
 
-        # Creates mptpdict, which is a dictionary of all PharmaProgram items currently in the database
+        # Creates itemlist, which is simply a list of all PharmaProgram items regardless of a MPTP
+        # Also creates mptpdict, which is a dictionary of all PharmaProgram items currently in the database that have an MPTP condition
+        itemlist = []
         mptpdict = {}
         for item in MPTP.objects.all():
-            mptpdict[item.itemdesc] = item.mptp
+            itemlist.append(item.itemdesc)
+            if item.mptp_applies is True:
+                mptpdict[item.itemdesc] = item.mptp
 
         # Convert the file object to a Pandas dataframe
         ppsales = pd.read_excel(report)
@@ -45,14 +50,21 @@ def upload_file(request):
         # Store final string in filename variable with .xlsx at the end
         filename = daterange + '.xlsx'
 
-        # Drop empty rows from start of dataframe
+        # Create an empty 'droplist' variable which will contain information of all dropped rows
+        droplist = []
+
+        # Drop empty rows from start of dataframe. Add dropped rows to droplist
+        droplist.append(["Irrelevant starting rows dropped:"])
+        droplist.append(ppsales.iloc[[0, 1, 2, 3, 4, 5]].values.tolist())
         ppsales = ppsales.drop([0, 1, 2, 3, 4, 5])
 
-        # Drop rows containing Lagevrio
-        ppsales = ppsales[ppsales["Description"].str.contains(
-            "LAGEVRIO 200MG 40 CAPS") == False]
+        # Drop any rows for items not currently in the mptp dictionary (e.g., Lagevrio)
+        # This will help future proof to save needing to make sure that the initial report contains only current PharmaProgram items
+        ppsales = ppsales[ppsales['Description'].isin(itemlist)]
 
-        # Drop final row that contains summary information
+        # Drop final row that contains summary information. Add dropped row to droplist
+        droplist.append(["Final row dropped:"])
+        droplist.append(ppsales.tail(1).values.tolist())
         ppsales.drop(ppsales.tail(1).index, inplace=True)
 
         # Drop irrelevant columns from dataframe and rename sales column
@@ -85,10 +97,22 @@ def upload_file(request):
         ppsales['Total Sales Ex'] = ppsales['Qty']*ppsales['Price']
 
         # Drop all rows that 'take the piss', which have an MPTPDiff > $5
+        # Save rows as pisstakes for later auditing
+        droplist.append(
+            ["Removed for having too high a difference from MPTP:"])
+        droplist.append(ppsales[ppsales['MPTPDiff'] > 0].values.tolist())
         ppsales = ppsales.drop(ppsales[ppsales['MPTPDiff'] > 0].index)
 
-        # Drop all rows that have a Total Sales Ex of 0 for some reason
-        ppsales = ppsales.drop(ppsales[ppsales['Total Sales Ex'] == 0].index)
+        # Drop all rows that have a Total Sales Ex of 0 for some reason, if there are any
+        # Add row(s) if any to droplist
+        if ppsales[ppsales['Total Sales Ex'] == 0].size > 0:
+            droplist.append(["Removed for having Total Sales Ex = 0"])
+            droplist.append(
+                ppsales[ppsales['Total Sales Ex'] == 0].values.tolist())
+            ppsales = ppsales.drop(
+                ppsales[ppsales['Total Sales Ex'] == 0].index)
+        else:
+            pass
 
         # Reset index column to adjust for deleted rows
         # (this just cleans up the dataframe view and doesn't affect the final export)
@@ -113,6 +137,12 @@ def upload_file(request):
             response = HttpResponse(b.getvalue(
             ), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            for sublist in droplist:
+                for subsublist in sublist:
+                    if len(sublist) > 1:
+                        messages.error(request, subsublist)
+                    else:
+                        messages.error(request, sublist)
             return response
     else:
         form = UploadReportForm

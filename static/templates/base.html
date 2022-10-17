@@ -75,8 +75,8 @@
                      </div>
                      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
                         <ul class="btn">
-                           <li class="down_btn"><a href="#">Download</a></li>
-                           <li><a href="#">Sign Up</a></li>
+                           <li class="down_btn"><a href="{% url 'admin:index' %}">Log in</a></li>
+                           <li><a href="{% url 'signup' %}">Sign Up</a></li>
                            <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                            <li><button type="button" id="sidebarCollapse">
                                  <img src=" {% static 'images/menu_icon.png' %} " alt="#" />
@@ -106,9 +106,9 @@
                                  <h3>My Vision </h3>
                               </div>
                               <ul class="location_icon">
-                                 <li>I'm a lazy guy, and I definitely don't like doing things if I know that there's an
-                                    easier way. This is why I'll spend countless hours developing the way to do
-                                    something easier. Make sense?</li>
+                                 <li>I'm a lazy guy, and I definitely don't enjoy doing things if I know that there's an
+                                    easier way. This is exactly why I counterintuitively spend countless hours
+                                    developing easier ways to do things easier.</li>
                               </ul>
                            </div>
 
@@ -116,9 +116,9 @@
                      </div>
                      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                         <div class="row">
-                           <div class="col-md-7 col-sm-6">
+                           <div class="col-md-8 col-sm-6">
                               <div class="address">
-                                 <h3>Newsletter </h3>
+                                 <h3>Newsletter</h3>
                               </div>
                               <form class="bottom_form">
                                  <input class="enter" placeholder="Enter Your Email" type="text"

@@ -41,8 +41,9 @@ INSTALLED_APPS = [
 
     # Created apps
     'home',
+    'accounts',
     'blog',
-    'ppxl'
+    'ppxl',
 ]
 
 MIDDLEWARE = [

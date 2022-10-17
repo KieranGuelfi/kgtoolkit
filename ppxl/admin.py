@@ -12,6 +12,7 @@ class MPTPAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "itemdesc",
+        "mptp_applies",
         "mptp",
         "date_added",
         "date_modified",
@@ -25,6 +26,7 @@ class MPTPAdmin(admin.ModelAdmin):
     list_editable = (
         "name",
         "itemdesc",
+        "mptp_applies",
         "mptp",
     )
 
