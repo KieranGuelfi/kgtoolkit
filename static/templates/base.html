@@ -50,9 +50,16 @@
                <i class="fa fa-arrow-left"></i>
             </div>
             <ul class="list-unstyled components">
-               <li class="active"> <a href="#">Home</a> </li>
+               <li class="active"><a href="{% url 'homeview' %}">Home</a> </li>
+               {% if user.is_authenticated %}
                <li><a href="{% url 'upload_file' %}">PPXL</a> </li>
+               {% endif %}
+               {% if user.is_authenticated %}
                <li><a href="{% url 'blogview' %}">Blog</a> </li>
+               {% endif %}
+               {% if user.is_authenticated %}
+               <li><a href="{% url 'logout' %}">Logout</a> </li>
+               {% endif %}
             </ul>
          </nav>
       </div>
@@ -75,7 +82,7 @@
                      </div>
                      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
                         <ul class="btn">
-                           <li class="down_btn"><a href="{% url 'admin:index' %}">Log in</a></li>
+                           <li class="down_btn"><a href="{% url 'login' %}">Log in</a></li>
                            <li><a href="{% url 'signup' %}">Sign Up</a></li>
                            <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                            <li><button type="button" id="sidebarCollapse">
@@ -114,7 +121,7 @@
 
                         </div>
                      </div>
-                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                     <!-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                         <div class="row">
                            <div class="col-md-8 col-sm-6">
                               <div class="address">
@@ -127,7 +134,7 @@
                               </form>
                            </div>
                         </div>
-                     </div>
+                     </div> -->
                   </div>
                </div>
                <div class="copyright">
